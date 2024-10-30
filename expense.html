@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses - TrackR</title>
+
+    <!-- Link to Google Fonts for a high-tech font -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, #0a0a0a, #1c1c1c);
+            color: white;
+            overflow: hidden;
+        }
+
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Green glow effect */
+            font-family: "Orbitron", sans-serif; /* High-tech font for the header */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            transition: transform 0.3s ease;
+        }
+
+        form:hover {
+            transform: scale(1.05); /* Slight scale on hover */
+        }
+
+        input,
+        select {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3); /* Light border */
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+            color: white;
+            transition: background-color 0.3s ease, border 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        input:focus,
+        select:focus {
+            background: rgba(255, 255, 255, 0.2); /* Highlight on focus */
+            border-color: #00ff00; /* Green border on focus */
+        }
+
+        /* Updated styles for select element */
+        select {
+            background: rgba(255, 255, 255, 0.2); /* Slightly lighter background for visibility */
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Style for dropdown options */
+        select option {
+            background: #282c34; /* Dark background for options */
+            color: white; /* White text color for options */
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(0, 255, 0, 0.7);
+            border-radius: 50%;
+            transition: transform 0.5s ease;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 0;
+        }
+
+        button:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            color: #fff; /* Change text color on hover */
+        }
+
+        #expenseList {
+            margin-top: 20px;
+            width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+            max-height: 300px; /* Limit height */
+            position: relative; /* Positioning for overflow */
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background 0.3s ease;
+            font-family: "Orbitron", sans-serif; /* High-tech font for expense items */
+        }
+
+        .expense-item:last-child {
+            border-bottom: none; /* Remove border from the last item */
+        }
+
+        .expense-item:hover {
+            background: rgba(0, 255, 0, 0.1); /* Light green on hover */
+        }
+
+        #savings {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ffc107; /* Gold color for savings */
+            text-shadow: 0 0 5px rgba(255, 193, 7, 1);
+            font-family: "Orbitron", sans-serif; /* High-tech font for savings display */
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const salaryForm = document.getElementById('salaryForm');
+            const expenseForm = document.getElementById('expenseForm');
+            const expenseList = document.getElementById('expenseList');
+            const savingsDisplay = document.getElementById('savings');
+            const salaryInput = document.getElementById('salaryInput');
+            let salaryEntered = false; // To check if salary is entered
+            let totalExpenses = 0; // To keep track of total expenses
+            let salary = 0; // To store the salary
+
+            // Function to handle salary submission
+            salaryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                salary = parseFloat(salaryInput.value);
+                if (!isNaN(salary) && salary > 0) {
+                    alert(`Salary set to: ₹${salary}`);
+                    salaryEntered = true; // Set salary as entered
+                    salaryForm.reset(); // Clear the salary form
+                    savingsDisplay.textContent = `Savings: ₹${salary.toFixed(2)}`; // Display initial savings
+                } else {
+                    alert("Please enter a valid salary.");
+                }
+            });
+
+            // Function to handle expense submission
+            expenseForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!salaryEntered) {
+                    alert("Please enter your salary first.");
+                    return;
+                }
+
+                const category = e.target.elements.category.value;
+                const amount = parseFloat(e.target.elements.amount.value);
+
+                if (category && amount) {
+                    totalExpenses += amount; // Update total expenses
+                    addExpenseToList(category, amount); // Add expense to the list
+                    updateSavings(); // Update savings display
+                }
+
+                e.target.reset(); // Clear the expense form
+            });
+
+            function addExpenseToList(category, amount) {
+                const item = document.createElement('div');
+                item.classList.add('expense-item');
+                item.textContent = `${category}: ₹${amount.toFixed(2)}`;
+                expenseList.appendChild(item);
+            }
+
+            function updateSavings() {
+                const savings = salary - totalExpenses; // Calculate savings
+                savingsDisplay.textContent = `Savings: ₹${savings.toFixed(2)}`; // Update savings display
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <h2>Manage Expenses</h2>
+
+    <form id="salaryForm">
+        <input type="number" id="salaryInput" placeholder="Enter Monthly Salary (INR)" required>
+        <button type="submit">Set Salary</button>
+    </form>
+
+    <form id="expenseForm">
+        <select name="category" required>
+            <option value="">Select Expense Category</option>
+            <option value="Household">Household</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+            <option value="Study">Study</option>
+        </select>
+        <input type="text" name="amount" placeholder="Amount (INR)" required>
+        <button type="submit">Add Expense</button>
+    </form>
+
+    <div id="expenseList"></div>
+    <div id="savings">Savings: ₹0.00</div>
+</body>
+
+</html>

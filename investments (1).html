@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investments - TrackR</title>
+    
+    <!-- Link to a futuristic Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d0d0d, #1a1a1a); /* High-tech dark background */
+            color: white;
+        }
+
+        h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif; /* Futuristic font for headers */
+            color: #00ffcc; /* Neon glow color */
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.8); /* Neon glow effect */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 255, 204, 0.4); /* Soft glow */
+            transition: transform 0.3s ease;
+        }
+
+        form:hover {
+            transform: scale(1.05); /* Slight scale on hover */
+        }
+
+        input {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+            color: white;
+            transition: background-color 0.3s ease, border 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.2); /* Highlight on focus */
+            border-color: #00ffcc; /* Neon border on focus */
+        }
+
+        button {
+            padding: 12px;
+            font-size: 18px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(0, 255, 204, 0.4); /* Neon ripple effect */
+            border-radius: 50%;
+            transition: transform 0.5s ease;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 0;
+        }
+
+        button:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        #suggestions {
+            margin-top: 20px;
+            width: 400px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 255, 204, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .suggestion-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Orbitron', sans-serif; /* Futuristic font for suggestions */
+            color: #00ffcc;
+            transition: background 0.3s ease;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(0, 255, 204, 0.2); /* Soft glow on hover */
+        }
+    </style>
+
+    <script>
+        function suggestInvestments() {
+            const amount = parseFloat(document.getElementById('investmentAmount').value);
+            const suggestionsContainer = document.getElementById('suggestions');
+            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+            
+            let suggestions = [];
+
+            if (amount < 100) {
+                suggestions = [
+                    'Savings Account', 
+                    'High-Interest Savings Account', 
+                    'Money Market Account', 
+                    'Certificate of Deposit (CD)', 
+                    'Government Bonds', 
+                    'Credit Union Account', 
+                    'Peer-to-Peer Lending (small scale)',
+                    'Precious Metals (Silver)',
+                    'Robo-Advisors (small amounts)',
+                    'Dividend Reinvestment Plans (DRIPs)'
+                ];
+            } else if (amount < 1000) {
+                suggestions = [
+                    'Exchange-Traded Funds (ETFs)', 
+                    'Mutual Funds', 
+                    'Robo-Advisors', 
+                    'Peer-to-Peer Lending', 
+                    'Corporate Bonds', 
+                    'Precious Metals (Gold)', 
+                    'Cryptocurrencies (small investments)', 
+                    'Blue-Chip Stocks', 
+                    'Index Funds', 
+                    'Dividend Stocks', 
+                    'REIT ETFs', 
+                    'Target-Date Funds'
+                ];
+            } else if (amount < 5000) {
+                suggestions = [
+                    'Stocks', 
+                    'Real Estate Investment Trusts (REITs)', 
+                    'Foreign Exchange (Forex)', 
+                    'Cryptocurrencies', 
+                    'Small Business Crowdfunding', 
+                    'Sector-Specific ETFs', 
+                    'Commodities (Gold, Silver)', 
+                    'Options Trading', 
+                    'Hedge Funds', 
+                    'Venture Capital Funds', 
+                    'Peer-to-Peer Lending (larger scale)', 
+                    'Private Equity'
+                ];
+            } else {
+                suggestions = [
+                    'Real Estate', 
+                    'Peer-to-Peer Lending', 
+                    'Venture Capital', 
+                    'Real Estate Crowdfunding', 
+                    'Angel Investing', 
+                    'Private Equity', 
+                    'Hedge Funds', 
+                    'Art and Collectibles', 
+                    'Commodities (Oil, Natural Gas)', 
+                    'Luxury Goods', 
+                    'Farmland Investments', 
+                    'Direct Investment in Startups', 
+                    'Multi-Family Real Estate', 
+                    'International Stocks'
+                ];
+            }
+
+            suggestions.forEach(suggestion => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = suggestion;
+                suggestionsContainer.appendChild(div);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h2>Investment Suggestions</h2>
+    <form id="investmentForm" onsubmit="event.preventDefault(); suggestInvestments();">
+        <input type="number" id="investmentAmount" placeholder="Enter Investment Amount" required>
+        <button type="submit">Get Suggestions</button>
+    </form>
+    <div id="suggestions"></div>
+</body>
+</html>

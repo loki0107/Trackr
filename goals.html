@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/goal.js" defer></script>
+    <title>Goals - TrackR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, #0a0a0a, #1c1c1c);
+            color: white;
+            overflow: hidden;
+        }
+
+        h2 {
+    font-size: 40px; /* Increased font size */
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #2e3a2e, #85b6b6); /* Gradient text */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* Fill the gradient in text */
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 
+                 0 0 20px rgba(0, 255, 0, 0.6), 
+                 0 0 30px rgba(0, 255, 0, 0.4); /* Multiple layers of shadow */
+    letter-spacing: 2px; /* Slight spacing between letters */
+    text-transform: uppercase; /* Uppercase for a stronger visual impact */
+    font-weight: bold; /* Bolder text */
+    transition: transform 0.3s ease; /* Add a hover effect */
+}
+
+h2:hover {
+    transform: scale(1.05); /* Slight hover zoom effect */
+}
+
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            transition: transform 0.3s ease;
+        }
+
+        form:hover {
+            transform: scale(1.05);
+        }
+
+        input {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: background-color 0.3s ease, border 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00ff00;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(0, 255, 0, 0.7);
+            border-radius: 50%;
+            transition: transform 0.5s ease;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 0;
+        }
+
+        button:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        #goalList {
+            margin-top: 20px;
+            width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .goal-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background 0.3s ease;
+            font-weight: 500; /* Medium weight for goal items */
+            color: #e0e0e0; /* Lighter color for better readability */
+            line-height: 1.5; /* Improved line height for readability */
+        }
+
+        .goal-item:last-child {
+            border-bottom: none;
+        }
+
+        .goal-item:hover {
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        #appreciationMessage {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ffc107;
+            text-shadow: 0 0 5px rgba(255, 193, 7, 1);
+            font-weight: bold; /* Bold for emphasis */
+            line-height: 1.4; /* Improved line height */
+        }
+
+        #savingsForm {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        #savingsForm input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Manage Goals</h2>
+    <form id="goalForm">
+        <input type="text" id="goalName" placeholder="Goal Name" required>
+        <input type="number" id="targetAmount" placeholder="Target Amount (INR)" required>
+        <button type="submit">Add Goal</button>
+    </form>
+
+    <form id="savingsForm">
+        <input type="number" id="savingsAmount" placeholder="Enter Savings Amount (INR)" required>
+        <button type="submit" id="updateSavings">Update Savings</button>
+    </form>
+
+    <div id="goalList"></div>
+    <div id="appreciationMessage"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const goalForm = document.getElementById('goalForm');
+            const savingsForm = document.getElementById('savingsForm');
+            const goalList = document.getElementById('goalList');
+            const appreciationMessage = document.getElementById('appreciationMessage');
+            let savingsAmount = 0; // Initial savings amount
+            let goals = []; // Array to store goals
+
+            // Function to handle goal submission
+            goalForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const goalName = document.getElementById('goalName').value;
+                const targetAmount = parseFloat(document.getElementById('targetAmount').value);
+
+                if (goalName && targetAmount > 0) {
+                    addGoalToList(goalName, targetAmount);
+                    goals.push({ name: goalName, target: targetAmount }); // Store goal in array
+                    goalForm.reset(); // Clear the form
+                    checkGoals(); // Check if any goals are achieved
+                }
+            });
+
+            function addGoalToList(name, target) {
+                const item = document.createElement('div');
+                item.classList.add('goal-item');
+                item.textContent = `${name}: ₹${target.toFixed(2)}`;
+                goalList.appendChild(item);
+            }
+
+            // Handle savings amount submission
+            savingsForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                savingsAmount = parseFloat(document.getElementById('savingsAmount').value);
+                savingsForm.reset(); // Clear the savings form
+                checkGoals(); // Check if any goals are achieved
+            });
+
+            function checkGoals() {
+                goals.forEach(goal => {
+                    if (savingsAmount >= goal.target) {
+                        showAppreciation(goal.name);
+                    }
+                });
+            }
+
+            function showAppreciation(goalName) {
+                appreciationMessage.textContent = `Congratulations! You've achieved your goal: ${goalName}! 🎉`;
+            }
+        });
+    </script>
+</body>
+
+</html>
